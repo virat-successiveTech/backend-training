@@ -1,5 +1,5 @@
 operation,input1,input2,result
-add,2,2,4
-sub,2,2,0
-mult,2,2,4
-div,2,2,1
+add,23,23,46
+sub,23,23,0
+mult,23,23,529
+div,23,23,1
