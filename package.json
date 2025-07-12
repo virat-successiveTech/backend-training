@@ -12,10 +12,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
     "@types/express": "^5.0.3",
     "@types/lodash": "^4.17.20",
     "@types/node": "^24.0.13",
