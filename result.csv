@@ -1,0 +1,5 @@
+operation,input1,input2,result
+add,2,2,4
+sub,2,2,0
+mult,2,2,4
+div,2,2,1
