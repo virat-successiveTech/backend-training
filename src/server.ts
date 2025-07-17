@@ -1,16 +1,21 @@
-// src/server.ts
-import express from 'express';
-import cookieParser from 'cookie-parser';
-import router from './routes/userRoutes';
 
+import express from 'express';
+
+import router from './routes/userRoutes';
+import { loggerMiddleware } from './middleware/loggerMiddleware';
+import errorHandler from './middleware/errorHandler';
+import customHeaderMiddleware from './middleware/customHeader';
+import { basicLimiter } from './middleware/rateLimitMiddleware';
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+app.use(basicLimiter(3,30000))
 app.use(express.json());
-app.use(cookieParser());
+app.use(loggerMiddleware);
+app.use(customHeaderMiddleware("Virat","Tripathi"))
 
-// Routes
+
 app.use('/api/users', router);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
