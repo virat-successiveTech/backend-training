@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
-    "dev": "nodemon --watch src --ext ts --exec ts-node src/app.ts"
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -14,11 +14,13 @@
   "dependencies": {
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.9",
     "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.20",
     "@types/node": "^24.0.13",
     "nodemon": "^3.1.10",
