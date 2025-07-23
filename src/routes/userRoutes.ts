@@ -1,14 +1,13 @@
-// src/routes/user.routes.ts
 import { Router } from 'express';
-import { getUsers,createUser } from '../controllers/userController';
-import authentication, { AuthenticatedReq, secret_key } from '../middleware/authMiddleware';
+import { UserController } from '../controllers/userController';
+import authentication, { secret_key } from '../middleware/authMiddleware';
 import { Request,Response } from 'express';
 import jwt from "jsonwebtoken"
 import { mockList } from '../mockData';
 import middleware1 from '../middleware/middleware1';
 import middleware2 from '../middleware/middleware2';
 import middleware3 from '../middleware/middleware3';
-import { registerUser } from '../controllers/joiUserController';
+import { AuthController } from '../controllers/joiUserController';
 import validateRequest from '../middleware/validateRequest';
 import { userSchema } from '../validation/userSchema';
 import validateRegisterInput from '../controllers/validateRegisterInput';
@@ -16,32 +15,52 @@ import validateNumericQuery from '../controllers/validateNumericQuery';
 import validateRegion from '../controllers/validateRegion';
 import dynamicValidation from '../controllers/dynamicValidation';
 import createError from 'http-errors'
-import { asyncFailingRoute } from '../controllers/asynErrorUserHnadler';
-import { validateUserInput } from '../controllers/validationUser';
+import { ErrorTestController } from '../controllers/asynErrorUserHnadler';
+import { UserValidationMiddleware } from '../controllers/validationUser';
 
 
 
 const router = Router();
 
+//Creation of object of usercontroller class
+const userController = new UserController();
+
+//calling get and post users from the object 
+router.get('/', userController.getUsers.bind(userController));
+router.get('/list', validateNumericQuery(['page', 'limit']), userController.getUsers.bind(userController));
+router.post('/', userController.createUser.bind(userController));
+
+//Creation of object of joiUserController 
+const authController = new AuthController();
+
+//calling authcontroller functions through the created objects 
+router.post('/register', dynamicValidation, authController.registerUser.bind(authController));
+router.post('/register',validateRequest(userSchema),authController.registerUser.bind(authController))
+router.post('/validregister',validateRegisterInput,authController.registerUser.bind(authController))
+
 
 router.get('/mid',middleware1,middleware2,middleware3)
 
-router.post('/register', dynamicValidation, registerUser);
+//CReation of object of asynErrorHandler file class 
+const errorTestController = new ErrorTestController();
 
-router.get('/test/async-error', asyncFailingRoute);
+//calling the functions through objects name 
+router.get('/test/async-error', errorTestController.asyncFailingRoute.bind(errorTestController));
 
-router.post('/validate', validateUserInput);
 
-router.get('/', getUsers);
-router.get('/list', validateNumericQuery(['page', 'limit']), getUsers);
+//CReation of Object for ValidationUser class
+const validator = new UserValidationMiddleware();
+
+//Using the function through objects name 
+router.post('/validate', validator.validate.bind(validator));
+
 
 router.get('/secure-data', validateRegion, (req, res) => {
   res.json({ message: 'Access granted from an approved region.' });
 });
 
-router.post('/', createUser);
-router.post('/register',validateRequest(userSchema),registerUser)
-router.post('/validregister',validateRegisterInput,registerUser)
+
+
 router.post('/addUser',(req:Request,res:Response)=>{
    const{id,name,role} = req.body;
    const newUser = {
