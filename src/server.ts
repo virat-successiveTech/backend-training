@@ -6,8 +6,11 @@ import route from './routes/healthCheckRoutes';
 import router from './routes/userRoutes';
 import { loggerMiddleware } from './middleware/loggerMiddleware';
 import errorHandler from './middleware/errorHandler';
+import countriesRoute from './routes/countries';
+import connectDB from './config/database';
 
 import { createBasicLimiter } from './middleware/rateLimitMiddleware';
+import { seedCountries } from './scripts/seed';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -20,7 +23,8 @@ app.use(loggerMiddleware);
 
 
 app.use('/api/users', router);
-app.use('/api/users',route);  
+app.use('/api/users',route); 
+app.use('/api', countriesRoute); 
 
 
 app.use((req, res, next) => {
@@ -31,10 +35,13 @@ app.use((req, res, next) => {
 app.use(errorHandler);
 
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-function basicLimiter(arg0: number, arg1: number): any {
-  throw new Error('Function not implemented.');
-}
-
+connectDB()
+  .then(async () => {
+    await seedCountries(); // 👈 Automatically seed on startup
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('❌ Failed to connect to DB:', err);
+  });
