@@ -8,6 +8,7 @@ import { loggerMiddleware } from './middleware/loggerMiddleware';
 import errorHandler from './middleware/errorHandler';
 import countriesRoute from './routes/countries';
 import connectDB from './config/database';
+import routes from './routes/auth';
 
 import { createBasicLimiter } from './middleware/rateLimitMiddleware';
 import { seedCountries } from './scripts/seed';
@@ -24,7 +25,8 @@ app.use(loggerMiddleware);
 
 app.use('/api/users', router);
 app.use('/api/users',route); 
-app.use('/api', countriesRoute); 
+app.use('/api/countries', countriesRoute); 
+app.use('/api/auth',routes);
 
 
 app.use((req, res, next) => {
@@ -37,11 +39,11 @@ app.use(errorHandler);
 
 connectDB()
   .then(async () => {
-    await seedCountries(); // 👈 Automatically seed on startup
+    await seedCountries(); //  Automatically seed on startup
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      console.log(` Server running on http://localhost:${PORT}`);
     });
   })
   .catch((err) => {
-    console.error('❌ Failed to connect to DB:', err);
+    console.error('Failed to connect to DB:', err);
   });
