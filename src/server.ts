@@ -9,6 +9,7 @@ import errorHandler from './middleware/errorHandler';
 import countriesRoute from './routes/countries';
 import connectDB from './config/database';
 import routes from './routes/auth';
+import user2 from './routes/auth2';
 
 import { createBasicLimiter } from './middleware/rateLimitMiddleware';
 import { seedCountries } from './scripts/seed';
@@ -27,6 +28,8 @@ app.use('/api/users', router);
 app.use('/api/users',route); 
 app.use('/api/countries', countriesRoute); 
 app.use('/api/auth',routes);
+app.use('/User2',user2);
+
 
 
 app.use((req, res, next) => {
